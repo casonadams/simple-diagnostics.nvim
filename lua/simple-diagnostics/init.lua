@@ -76,7 +76,7 @@ vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
   callback = function() printDiagnostics(vim.api.nvim_win_get_cursor(0)[1] - 1) end
 })
 
-vim.api.nvim_create_autocmd({ 'InsertEnter' }, {
+vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter' }, {
   pattern = '*.*',
   group = augroup,
   callback = function() clear() end

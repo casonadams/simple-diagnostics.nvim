@@ -51,8 +51,7 @@ local function printDiagnostics(line_nr)
   local diagnostic_severity = ""
 
   for _, diagnostic in ipairs(line_diagnostics) do
-    diagnostic_message = diagnostic_message ..
-        string.format("%s", diagnostic.message or "")
+    diagnostic_message = diagnostic_message .. string.format("%s", diagnostic.message or "")
     diagnostic_severity = diagnostic.severity
     -- break on first error
     break
@@ -63,7 +62,8 @@ local function printDiagnostics(line_nr)
   end
 
   if show_virtual_text then
-    vim.api.nvim_buf_set_virtual_text(bufnr, 1, line_nr, { { diagnostic_message, severity[diagnostic_severity] } }, {})
+    local message = { { diagnostic_message, severity[diagnostic_severity] } }
+    vim.api.nvim_buf_set_virtual_text(bufnr, 1, line_nr, message, {})
   end
   set = true
 end
@@ -76,7 +76,7 @@ vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
   callback = function() printDiagnostics(vim.api.nvim_win_get_cursor(0)[1] - 1) end
 })
 
-vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter' }, {
+vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufEnter' }, {
   pattern = '*.*',
   group = augroup,
   callback = function() clear() end

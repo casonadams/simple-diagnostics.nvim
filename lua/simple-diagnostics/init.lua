@@ -1,7 +1,7 @@
 local set = false
 local show_virtual_text = true
 local show_message_area = true
-local prev_line_nr = vim.api.nvim_win_get_cursor(0)[1]
+local prev_line_nr = vim.api.nvim_win_get_cursor(0)[1] - 1
 local prev_bufnr = vim.api.nvim_get_current_buf()
 
 local severity = {
@@ -26,9 +26,8 @@ local function setup(parameters)
   end
 end
 
-local function clear(bufnr)
+local function clear()
   if not set then return end
-  if prev_bufnr ~= bufnr then return end
 
   if show_message_area then
     print(" ")
@@ -39,7 +38,7 @@ local function clear(bufnr)
       virt_text = { { "", "" } },
       virt_text_pos = 'eol',
     }
-    vim.api.nvim_buf_set_extmark(bufnr, 1, prev_line_nr, 10, opts)
+    vim.api.nvim_buf_set_extmark(prev_bufnr, 1, prev_line_nr, 10, opts)
   end
   set = false
 end
@@ -47,12 +46,14 @@ end
 local function printDiagnostics(bufnr, line_nr)
   local line_diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr, line_nr)
 
+  print("print", bufnr, prev_bufnr)
   if vim.tbl_isempty(line_diagnostics) then
-    clear(bufnr)
+    clear()
     return
   end
 
   if set then return end
+  prev_bufnr = bufnr
 
   local diagnostic_message = ""
   local diagnostic_severity = ""
@@ -93,9 +94,7 @@ vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
 vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufEnter' }, {
   pattern = '*.*',
   group = augroup,
-  callback = function() clear(
-      vim.api.nvim_get_current_buf()
-    )
+  callback = function() clear()
   end
 })
 

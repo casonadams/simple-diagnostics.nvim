@@ -1,6 +1,7 @@
 local set = false
 local show_virtual_text = true
 local show_message_area = true
+local prev_line_nr = 0
 
 local severity = {
   [1] = "LspDiagnosticsVirtualTextError",
@@ -32,7 +33,14 @@ local function clear()
     print(" ")
   end
   if show_virtual_text then
-    vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
+    local opts = {
+      -- end_line = 10,
+      id = 1,
+      virt_text = { { "", "" } },
+      virt_text_pos = 'eol',
+      -- virt_text_win_col = 20,
+    }
+    vim.api.nvim_buf_set_extmark(bufnr, 1, prev_line_nr, 10, opts)
   end
   set = false
 end
@@ -63,8 +71,12 @@ local function printDiagnostics(line_nr)
   end
 
   if show_virtual_text then
-    local message = { { diagnostic_message, severity[diagnostic_severity] } }
-    vim.api.nvim_buf_set_virtual_text(bufnr, 1, line_nr, message, {})
+    local opts = {
+      id = 1,
+      virt_text = { { diagnostic_message, severity[diagnostic_severity] } },
+      virt_text_pos = 'eol',
+    }
+    vim.api.nvim_buf_set_extmark(bufnr, 1, line_nr, 10, opts)
   end
   set = true
 end

@@ -10,6 +10,7 @@ local severity = {
 }
 
 local function setup(parameters)
+  parameters = parameters or {}
   if parameters.show_message_area == nil then
     show_message_area = false
   else

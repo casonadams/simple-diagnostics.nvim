@@ -9,28 +9,29 @@ Requires [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
 
 Disable `vitural_text`
 
+- neovim
+
 ```lua
 vim.diagnostic.config({
   virtual_text = false,
   underline = true,
-  float = { source = "always" },
-  severity_sort = true,
-  signs = true,
-  update_in_insert = false,
 })
+```
+- LunarVim
+
+```lua
+lvim.lsp.diagnostics.virtual_text = false
 ```
 
 ## install with packer
 
 ```lua
-use({"casonadams/simple-diagnostics.nvim"})
-```
-
-## setup
-
-```lua
-require('simple-diagnostics').setup({
-  show_virtual_text = true,
-  show_message_area = false,
+use({"casonadams/simple-diagnostics.nvim",
+  config = function()
+    require("simple-diagnostics").setup({
+      show_virtual_text = true,
+      show_message_area = true,
+    })
+  end,
 })
 ```

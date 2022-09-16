@@ -1,0 +1,70 @@
+*simple-diagnostics.nvim*   For Neovim version 0.6+
+
+A simple diagnostics plugin that works with lspconfig.
+Keep the virtual_text, remove the noise.
+
+Author: Cason Adams
+
+==============================================================================
+CONTENTS                                                  *simple-diagnostics*
+*simple-diagnostics-contents*
+
+Introduction..............................: |simple-diagnostics-introduction|
+Usage.....................................: |simple-diagnostics-usage|
+Configuration.............................: |simple-diagnostics-configuration|
+Styling...................................: |simple-diagnostics-styling|
+
+==============================================================================
+INTRODUCTION                                 *simple-diagnostics-introduction*
+
+A simple diagnostics plugin for Neovim built using `lua`.
+
+This plugin enables virtual_text without all the noise of virtual_text.
+Only shows diagnostics messages at the current line of the cursor.
+
+==============================================================================
+USAGE                                               *simple-diagnostics-usage*
+
+1. Disable lspconfig virtual_text
+
+- nvim
+>
+  vim.diagnostic.config({
+    virtual_text = false
+  })
+<
+
+- lvim (LunarVim)
+>
+  lvim.lsp.diagnostics.virtual_text = false
+<
+
+2. Setup simple-diagnostics
+>
+  require("simple-diagnostics").setup({})
+<
+==============================================================================
+CONFIGURATION                               *simple-diagnostics-configuration*
+
+The available configurations are:
+  - vitural_text: (bool) shows current line diagnostics as virtual_text
+  - message_area: (bool) shows current line diagnostics in MsgArea
+  - signs:        (bool) shows sign symbol in message
+>
+  require("simple-diagnostics").setup({
+    virtual_text = true,
+    message_area = true,
+    signs = true,
+  })
+<
+==============================================================================
+STYLING                                           *simple-diagnostics-styling*
+
+In init.lua the sign can be defined globally.
+>
+  local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+  for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = nil })
+  end
+<

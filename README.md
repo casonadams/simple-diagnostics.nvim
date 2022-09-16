@@ -13,10 +13,10 @@ Disable `vitural_text`
 
 ```lua
 vim.diagnostic.config({
-  virtual_text = false,
-  underline = true,
+  virtual_text = false
 })
 ```
+
 - LunarVim
 
 ```lua
@@ -29,9 +29,20 @@ lvim.lsp.diagnostics.virtual_text = false
 use({"casonadams/simple-diagnostics.nvim",
   config = function()
     require("simple-diagnostics").setup({
-      show_virtual_text = true,
-      show_message_area = true,
+      virtual_text = true,
+      message_area = true,
+      signs = true,
     })
   end,
 })
+```
+
+## define sign symbols
+
+```lua
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = nil })
+end
 ```

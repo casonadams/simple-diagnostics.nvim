@@ -34,7 +34,7 @@ local function clear(bufnr)
       virt_text = { { "", "" } },
       virt_text_pos = 'eol',
     }
-    vim.api.nvim_buf_set_extmark(bufnr, 1, prev_line_nr, 0, opts)
+    pcall(vim.api.nvim_buf_set_extmark, bufnr, 1, prev_line_nr, 0, opts)
   end
   set = false
 end
@@ -82,7 +82,7 @@ local function printDiagnostics(bufnr, line_nr)
       virt_text = { { diagnostic_message, severity[diagnostic.severity].texthl } },
       virt_text_pos = 'eol',
     }
-    vim.api.nvim_buf_set_extmark(bufnr, 1, line_nr, 0, opts)
+    pcall(vim.api.nvim_buf_set_extmark, bufnr, 1, line_nr, 0, opts)
   end
 end
 

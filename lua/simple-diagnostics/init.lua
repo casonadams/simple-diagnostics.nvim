@@ -8,7 +8,7 @@ local signs = false
 
 local severity = {
   { texthl = "LspDiagnosticsVirtualTextError", sign = "DiagnosticSignError" },
-  { texthl = "LspDiagnosticsVirtualTextWarning", sign = "DiagnosticSignWarning" },
+  { texthl = "LspDiagnosticsVirtualTextWarning", sign = "DiagnosticSignWarn" },
   { texthl = "LspDiagnosticsVirtualTextInformation", sign = "DiagnosticSignInfo" },
   { texthl = "LspDiagnosticsVirtualTextHint", sign = "DiagnosticSignHint" },
 }

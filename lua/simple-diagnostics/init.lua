@@ -7,10 +7,10 @@ local message_area = true
 local signs = false
 
 local severity = {
-  { texthl = "LspDiagnosticsVirtualTextError", sign = "DiagnosticSignError" },
-  { texthl = "LspDiagnosticsVirtualTextWarning", sign = "DiagnosticSignWarn" },
+  { texthl = "LspDiagnosticsVirtualTextError",       sign = "DiagnosticSignError" },
+  { texthl = "LspDiagnosticsVirtualTextWarning",     sign = "DiagnosticSignWarning" },
   { texthl = "LspDiagnosticsVirtualTextInformation", sign = "DiagnosticSignInfo" },
-  { texthl = "LspDiagnosticsVirtualTextHint", sign = "DiagnosticSignHint" },
+  { texthl = "LspDiagnosticsVirtualTextHint",        sign = "DiagnosticSignHint" },
 }
 
 local function setup(parameters)
@@ -22,7 +22,9 @@ local function setup(parameters)
 end
 
 local function clear(bufnr)
-  if not set then return end
+  if not set then
+    return
+  end
 
   if message_area then
     print(" ")
@@ -32,7 +34,7 @@ local function clear(bufnr)
     local opts = {
       id = 1,
       virt_text = { { "", "" } },
-      virt_text_pos = 'eol',
+      virt_text_pos = "eol",
     }
     pcall(vim.api.nvim_buf_set_extmark, bufnr, 1, prev_line_nr, 0, opts)
   end
@@ -50,27 +52,28 @@ local function printDiagnostics(bufnr, line_nr)
     return
   end
 
-  if set then return end
+  if set then
+    return
+  end
   prev_bufnr = bufnr
   set = true
 
   local diagnostic_message = ""
-  local diagnostic = line_diagnostics[#line_diagnostics]
+  -- local diagnostic = line_diagnostics[#line_diagnostics]
+  local diagnostic = line_diagnostics[1]
   local text = vim.fn.sign_getdefined(severity[diagnostic.severity].sign)
 
   local count = 0
-  for _ in pairs(text) do count = count + 1 end
+  for _ in pairs(text) do
+    count = count + 1
+  end
   if count >= 1 then
     text = text[1].text
   else
     text = ""
   end
 
-  diagnostic_message = diagnostic_message .. string.format(
-    "%s%s",
-    signs and text or "",
-    diagnostic.message or ""
-  )
+  diagnostic_message = diagnostic_message .. string.format("%s%s", signs and text or "", diagnostic.message or "")
 
   if message_area then
     print(diagnostic_message)
@@ -80,28 +83,28 @@ local function printDiagnostics(bufnr, line_nr)
     local opts = {
       id = 1,
       virt_text = { { diagnostic_message, severity[diagnostic.severity].texthl } },
-      virt_text_pos = 'eol',
+      virt_text_pos = "eol",
     }
     pcall(vim.api.nvim_buf_set_extmark, bufnr, 1, line_nr, 0, opts)
   end
 end
 
-local augroup = vim.api.nvim_create_augroup('simple-diagnostics', { clear = true })
+local augroup = vim.api.nvim_create_augroup("simple-diagnostics", { clear = true })
 
-vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
-  pattern = '*.*',
+vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave" }, {
+  pattern = "*.*",
   group = augroup,
-  callback = function() printDiagnostics(
-      vim.api.nvim_get_current_buf(),
-      vim.api.nvim_win_get_cursor(0)[1] - 1)
-  end
+  callback = function()
+    printDiagnostics(vim.api.nvim_get_current_buf(), vim.api.nvim_win_get_cursor(0)[1] - 1)
+  end,
 })
 
-vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufEnter' }, {
-  pattern = '*.*',
+vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufEnter" }, {
+  pattern = "*.*",
   group = augroup,
-  callback = function() clear(prev_bufnr)
-  end
+  callback = function()
+    clear(prev_bufnr)
+  end,
 })
 
 return {

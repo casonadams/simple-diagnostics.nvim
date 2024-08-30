@@ -42,7 +42,8 @@ local function clear(bufnr)
 end
 
 local function printDiagnostics(bufnr, line_nr)
-  local line_diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr, line_nr)
+  local line_number = vim.api.nvim_win_get_cursor(0)[1]
+  local line_diagnostics = vim.diagnostic.get(0, { lnum = line_number - 1 })
 
   prev_bufnr = bufnr
   prev_line_nr = line_nr
